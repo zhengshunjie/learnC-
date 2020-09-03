@@ -36,7 +36,7 @@ public:
 	void removeReference() { if (--refCount == 0) delete this; }
 
 	void markUnshareable() { shareable = false; }
-	bool isShareable()const { return refCount > 1; }
+	bool isShareable()const { return shareable; }
 
 	bool isShared() const { return refCount > 1; }
 
@@ -53,7 +53,9 @@ private:
 class BigInt : public RCObject
 {
 public:
+	BigInt() : digits(0), ndigits(0), size(0) {};
 	BigInt(unsigned u);
+	BigInt(const char* s);
 	~BigInt();
 
 	BigInt& operator=(const BigInt& rhs);
@@ -107,5 +109,16 @@ inline RCPtr<T>& RCPtr<T>::operator=(const RCPtr<T>& rhs)
 
 class RCBigInt
 {
-	
+	friend RCBigInt operator+(const RCBigInt&, const RCBigInt&);
+public:
+	RCBigInt(const char* p) : value(new BigInt(p)) {}
+	RCBigInt(unsigned u = 0) : value(new BigInt(u)) {}
+	RCBigInt(const BigInt& bi) : value(new BigInt(bi)) {}
+private:
+	RCPtr<BigInt> value;
 };
+
+inline RCBigInt operator+(const RCBigInt& left, const RCBigInt& right)
+{
+	return RCBigInt(*(left.value) + *(right.value));
+}

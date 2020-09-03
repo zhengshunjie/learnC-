@@ -1,5 +1,5 @@
 #include "refence.h"
-
+#include <string.h>
 BigInt::BigInt(unsigned u)
 {
 	unsigned v = u;
@@ -14,6 +14,20 @@ BigInt::BigInt(unsigned u)
 	{
 		digits[i] = u % 10;
 		u /= 10;
+	}
+}
+
+BigInt::BigInt(const char* s)
+{
+	if (s[0] == '\0')
+	{
+		s = "0";
+	}
+	size = ndigits = strlen(s);
+	digits = new char[size];
+	for (unsigned i = 0; i < ndigits; ++i)
+	{
+		digits[i] = s[ndigits - 1 - i] - '0';
 	}
 }
 
